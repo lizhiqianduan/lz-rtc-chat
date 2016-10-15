@@ -1,0 +1,23 @@
+{
+  "name": "lz-rtc-chat",
+  "version": "1.0.0",
+  "description": "A project using webRTC to char",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lizhiqianduan/lz-rtc-chat.git"
+  },
+  "keywords": [
+    "webRTC",
+    "chat"
+  ],
+  "author": "lizhiqianduan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lizhiqianduan/lz-rtc-chat/issues"
+  },
+  "homepage": "https://github.com/lizhiqianduan/lz-rtc-chat#readme"
+}
