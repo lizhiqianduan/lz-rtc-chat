@@ -13,8 +13,8 @@ var SocketClient = require("./SocketClient.js");
 function init(options) {
     var wss = options.wss;
     wss.on('connection', function(ws) {
-        console.log("new connection");
         var socket_client = new SocketClient(ws);
+        console.log("new connection",socket_client.socket_client_id);
         socket_client.bind_event();
         SocketClient.add(socket_client);
 
@@ -25,6 +25,14 @@ function init(options) {
             }).val()
         );
 
+        SocketClient.get_all_clients_id().forEach(function(id){
+            SocketClient.socket_clients[id].ws.send(
+                new Message(2,{
+                    client_ids:SocketClient.get_all_clients_id(),
+                    yourId:socket_client.socket_client_id
+                }).val()
+            );
+        });
     });
 }
 

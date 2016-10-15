@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>demo index</title>
+</head>
+<body>
+<h2>local</h2>
+<hr/>
+<button onclick="open_my_video()">open my video</button>
+<button onclick="close_my_video()">close my video</button>
+<button id="capture_my_image_btn" style="display: none;" onclick="capture_my_image()">capture image</button>
+<div >
+    <span id="my-video"></span>
+    <span id="my-image"></span>
+</div>
+<h2>remote</h2>
+<hr/>
+<button onclick="">connect to others video</button>
+<h2>client list</h2>
+<ul id="client-list" >
+
+</ul>
+<div id="others-video">
+
+</div>
+
+</body>
+</html>
+<script src="../client/lz.rtc.client_config.js"></script>
+<script src="./demo.js"></script>

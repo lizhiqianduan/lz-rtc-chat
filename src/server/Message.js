@@ -2,8 +2,11 @@
  * Created by xiaohei on 2016/10/16.
  * More info,see my site http://www.lizhiqianduan.com.
  */
-var message_desc = {
-    "1":"new connection comming"
+
+// message desc send to client
+var message_desc_send_to_client = {
+    1:"connection conneted",
+    2:"user id list"
 };
 
 // class
@@ -21,5 +24,5 @@ exports = module.exports = Message;
 
 // other private function
 function get_desc_by_id(id){
-    return message_desc[id];
+    return message_desc_send_to_client[id];
 }
