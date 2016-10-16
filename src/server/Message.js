@@ -6,14 +6,15 @@
 // message desc send to client
 var message_desc_send_to_client = {
     1:"connection conneted",
-    2:"user id list"
+    2:"user id list",
+    3:"remote sdp comming"
 };
 
 // class
 function Message(id,body){
-    this.id = id;
+    this.message_id = id;
     this.body = body;
-    this.desc = get_desc_by_id(this.id);
+    this.desc = get_desc_by_id(this.message_id);
 }
 
 Message.prototype.val = function(){

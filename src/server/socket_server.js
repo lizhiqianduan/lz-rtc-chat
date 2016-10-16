@@ -21,7 +21,7 @@ function init(options) {
         ws.send(
             new Message(1,{
                 msg:"connected!",
-                yourId:socket_client.socket_client_id
+                your_id:socket_client.socket_client_id
             }).val()
         );
 
@@ -29,7 +29,7 @@ function init(options) {
             SocketClient.socket_clients[id].ws.send(
                 new Message(2,{
                     client_ids:SocketClient.get_all_clients_id(),
-                    yourId:socket_client.socket_client_id
+                    your_id:socket_client.socket_client_id
                 }).val()
             );
         });
