@@ -9,7 +9,7 @@
 ;(function(rtc){
     rtc.Channel = Channel;
     var socket = null;
-    var noop = function(){console.log("noop",this,arguments)};
+    var noop = function(){console.log("noop",arguments)};
 
     /*
     * options.channel_type                  : string
@@ -39,7 +39,7 @@
             socket = new WebSocket(options.socket.url);
             socket.onopen = function(){
                 self.is_ready = true;
-                self.on_ready();
+                self.on_ready("on ready");
             };
             socket.onmessage = function (message) {
                 var msg = JSON.parse(message.data);
