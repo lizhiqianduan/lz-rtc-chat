@@ -9,7 +9,7 @@
 <hr/>
 <button onclick="open_my_video()">open my video</button>
 <button onclick="close_my_video()">close my video</button>
-<button id="capture_my_image_btn" style="display: none;" onclick="capture_my_image()">capture image</button>
+<button id="document.getElementById("capture_my_image_btn")" style="display: none;" onclick="capture_my_image()">capture image</button>
 <div >
     <span id="my-video"></span>
     <span id="my-image"></span>
@@ -29,32 +29,20 @@
 </html>
 <script src="../client/lz.rtc.client_config.js"></script>
 <script src="../client/lz.rtc.Channel.js"></script>
-
+<script src="../client/lz.rtc.peerManager.js"></script>
 
 <script>
-
-    var my_stream = null;
-    var my_id = null;
-    var my_video_dom
-            , all_peer_connection = {}
-            , my_image_dom
-            , p2p_remote_video_dom = document.getElementById("p2p_remote_video")
-            , capture_my_image_btn = document.getElementById("capture_my_image_btn")
-            , iceServer = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]}
-            , p2p_peer_connection
-            , all_peers_map = {}
-            , p2p_remote_client_id
-            ;
 
     var channel = new lz.rtc.Channel({
         socket:{
             url:"ws:localhost:4080"
         }
     });
-
+    var peerManager = lz.rtc.peerManager;
+    peerManager(channel,{
+        on_remote_stream_coming:on_remote_stream_coming
+    });
     channel.on_my_id_coming = function(message){
-//        console.log(1111,this,arguments);
-        my_id = message.body.your_id;
         document.getElementById("my-id").innerHTML = message.body.your_id;
     };
 
@@ -65,95 +53,38 @@
                     "<li><a href='javascript:void(0);' onclick='channel.view_remote_video(\""+ ele +"\")'>"+ ele +"</a></li>";
         })
     };
-
-    channel.on_offer_sdp_coming = function(msg){
-        var p2p_peer_connection = new webkitRTCPeerConnection(iceServer);
-        var p2p_remote_client_id = msg.body.remote_id;
-        all_peer_connection[p2p_remote_client_id] = p2p_peer_connection;
-        var pc = p2p_peer_connection;
-        pc.onaddstream = function (evt) {
-            var remote_video = document.createElement('video');
-            remote_video.src = window.URL.createObjectURL(evt.stream);
-            remote_video.autoplay = true;
-            p2p_remote_video_dom.appendChild(remote_video);
-        };
-        pc.onicecandidate = function(evt) {
-            channel.send_candidate_to_remote(p2p_remote_client_id,evt.candidate);
-        };
-
-        pc.setRemoteDescription(msg.body.offer);
-        pc.createAnswer(function(answer) {
-            pc.setLocalDescription(answer);
-            channel.send_answer_to_remote(msg.body.remote_id,answer);
-        },function(){});
-    };
-    channel.on_answer_sdp_coming = function(msg){
-        var p2p_peer_connection = all_peer_connection[msg.body.remote_id];
-        p2p_peer_connection.setRemoteDescription(
-                new RTCSessionDescription(msg.body.answer)
-        );
-    };
-
-    channel.on_candidate_coming = function(msg){
-        var p2p_peer_connection = all_peer_connection[msg.body.remote_id];
-        if(msg.body.candidate)
-        p2p_peer_connection.addIceCandidate(
-                new RTCIceCandidate(msg.body.candidate)
-                ,function(){console.log("add cb!",arguments)}
-                ,function(){console.log("err cb!",arguments)}
-        );
-    };
-
-
-
-
-
-
     channel.on_new_client_want_to_view_my_video = function(msg){
-
-        var p2p_remote_client_id = msg.body.remote_id;
-        var p2p_peer_connection = new webkitRTCPeerConnection(iceServer);
-
-        all_peer_connection[p2p_remote_client_id] = p2p_peer_connection;
-
-        var pc = p2p_peer_connection;
-
-        pc.onicecandidate = function(evt) {
-            if(evt.candidate)
-                channel.send_candidate_to_remote(p2p_remote_client_id,evt.candidate)
-        };
-
-        pc.oniceconnectionstatechange = function(evt){
-            console.log(2222,evt.target.iceConnectionState);
-        };
-        pc.onaddstream = function (evt) {
-            console.log("on add stream!");
-            var remote_video = document.createElement('video');
-            remote_video.src = window.URL.createObjectURL(evt.stream);
-            p2p_remote_video_dom.appendChild(remote_video);
-        };
-
-        if(my_stream){
-            pc.addStream(stream);
-            pc.createOffer(function(offer) {
-                pc.setLocalDescription(offer);
-                channel.send_offer_to_remote(p2p_remote_client_id,offer);
-            },logError);
-            return;
-        }
-
-        navigator.webkitGetUserMedia({ "audio": true, "video": true },gotStream, function(){});
-        function gotStream(stream){
-            my_stream = stream;
-            pc.addStream(stream);
-            pc.createOffer(function(offer) {
-                pc.setLocalDescription(offer);
-                channel.send_offer_to_remote(p2p_remote_client_id,offer);
-            },logError);
-        }
-
-        function logError() { console.log(arguments) }
+        lz.rtc.peerManager.allow_remote_view(msg.body.remote_id);
     };
+
+
+
+//    channel.on_new_client_want_to_view_my_video = function(msg){
+//        console.log("on_new_client_want_to_view_my_video");
+//        var p2p = new lz.rtc.peerManager({remote_id:msg.body.remote_id});
+//        p2p.allow_remote_view_video(msg.body.remote_id);
+//        p2p.on_remote_stream_coming = function(remote_id,stream){
+//            console.log("on add stream!");
+//            var remote_video = document.createElement('video');
+//            remote_video.src = window.URL.createObjectURL(stream);
+//            document.getElementById("p2p_remote_video").appendChild(remote_video);
+//        };
+//    };
+
+
+
+
+
+    function on_remote_stream_coming(remote_id,stream){
+        console.log("on add stream!");
+        var remote_video = document.createElement('video');
+        remote_video.autoplay = true;
+        remote_video.src = window.URL.createObjectURL(stream);
+        document.getElementById("p2p_remote_video").appendChild(remote_video);
+    };
+
+
+
 
 
 

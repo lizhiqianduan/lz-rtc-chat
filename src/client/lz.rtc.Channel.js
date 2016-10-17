@@ -43,7 +43,7 @@
             };
             socket.onmessage = function (message) {
                 var msg = JSON.parse(message.data);
-                console.log(msg.message_id,msg);
+//                console.log(msg.message_id,msg);
                 var fn_name = Channel.dispatch_msg[msg.message_id];
                 if(typeof  fn_name == "function"){
                     fn_name(msg,self);
