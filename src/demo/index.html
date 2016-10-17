@@ -9,7 +9,7 @@
 <hr/>
 <button onclick="open_my_video()">open my video</button>
 <button onclick="close_my_video()">close my video</button>
-<button id="document.getElementById("capture_my_image_btn")" style="display: none;" onclick="capture_my_image()">capture image</button>
+<button id="capture_my_image_btn" style="display: none;" onclick="capture_my_image()">capture image</button>
 <div >
     <span id="my-video"></span>
     <span id="my-image"></span>
@@ -38,10 +38,8 @@
             url:"ws:localhost:4080"
         }
     });
-    var peerManager = lz.rtc.peerManager;
-    peerManager(channel,{
-        on_remote_stream_coming:on_remote_stream_coming
-    });
+    var peer_manager = lz.rtc.peerManager;
+
     channel.on_my_id_coming = function(message){
         document.getElementById("my-id").innerHTML = message.body.your_id;
     };
@@ -54,28 +52,11 @@
         })
     };
     channel.on_new_client_want_to_view_my_video = function(msg){
-        lz.rtc.peerManager.allow_remote_view(msg.body.remote_id);
+        peer_manager.allow_remote_view(msg.body.remote_id);
     };
 
 
-
-//    channel.on_new_client_want_to_view_my_video = function(msg){
-//        console.log("on_new_client_want_to_view_my_video");
-//        var p2p = new lz.rtc.peerManager({remote_id:msg.body.remote_id});
-//        p2p.allow_remote_view_video(msg.body.remote_id);
-//        p2p.on_remote_stream_coming = function(remote_id,stream){
-//            console.log("on add stream!");
-//            var remote_video = document.createElement('video');
-//            remote_video.src = window.URL.createObjectURL(stream);
-//            document.getElementById("p2p_remote_video").appendChild(remote_video);
-//        };
-//    };
-
-
-
-
-
-    function on_remote_stream_coming(remote_id,stream){
+    peer_manager.on_remote_stream_coming = function(remote_id,stream){
         console.log("on add stream!");
         var remote_video = document.createElement('video');
         remote_video.autoplay = true;
@@ -85,10 +66,4 @@
 
 
 
-
-
-
-
-
 </script>
-<!--<script src="./demo.js"></script>-->

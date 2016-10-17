@@ -5,27 +5,28 @@
 
 
 ;(function (rtc) {
-    rtc.peerManager = peerManager;
-    rtc.my_stream = null;
     var iceServer = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]}
         , _channel
         , noop = function(){}
         ;
-
     var all_peer_connections = rtc.all_peer_connections = {};
+
+    rtc.peerManager = peerManager;
+    rtc.my_stream = null;
+
 
     function peerManager(channel,options) {
         var self = this;
-        this.on_remote_stream_coming = options.on_remote_stream_coming || noop;
+        console.log(self);
         _channel = channel;
-        channel.on_offer_sdp_coming = function(msg){
+        channel.__on_offer_sdp_coming = function(msg){
             var p2p_peer_connection = new webkitRTCPeerConnection(iceServer);
             var p2p_remote_client_id = msg.body.remote_id;
             all_peer_connections[p2p_remote_client_id] = p2p_peer_connection;
             var pc = p2p_peer_connection;
             pc.onaddstream = (function (p2p_remote_client_id) {
                 return function(evt){
-                    self.on_remote_stream_coming(p2p_remote_client_id,evt.stream);
+                    peerManager.on_remote_stream_coming(p2p_remote_client_id,evt.stream);
                 }
             })(p2p_remote_client_id);
             pc.onicecandidate = (function(p2p_remote_client_id) {
@@ -41,22 +42,25 @@
                 channel.send_answer_to_remote(msg.body.remote_id,answer);
             },function(){});
         };
-        channel.on_answer_sdp_coming = function(msg){
+        channel.__on_answer_sdp_coming = function(msg){
             var p2p_peer_connection = all_peer_connections[msg.body.remote_id];
             p2p_peer_connection.setRemoteDescription(
                 new RTCSessionDescription(msg.body.answer)
             );
         };
 
-        channel.on_candidate_coming = function(msg){
+        channel.__on_candidate_coming = function(msg){
             var p2p_peer_connection = all_peer_connections[msg.body.remote_id];
             if(msg.body.candidate)
                 p2p_peer_connection.addIceCandidate(
                     new RTCIceCandidate(msg.body.candidate)
                 );
         };
+
+        return peerManager;
     }
 
+    peerManager.on_remote_stream_coming = function(){console.log("on remote stream coming!");};
 
     peerManager.allow_remote_view = function(remote_id){
         var channel =_channel;
@@ -76,7 +80,7 @@
         };
         pc.onaddstream = (function (p2p_remote_client_id) {
             return function(evt){
-                self.on_remote_stream_coming(p2p_remote_client_id,evt.stream);
+                peerManager.on_remote_stream_coming(p2p_remote_client_id,evt.stream);
             }
         })(p2p_remote_client_id);
 

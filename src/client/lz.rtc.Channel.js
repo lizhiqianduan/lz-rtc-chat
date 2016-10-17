@@ -29,11 +29,12 @@
         this.on_ready = options.on_ready || noop;
         this.on_id_list_coming = options.on_id_list_coming || noop;
         this.on_my_id_coming = options.on_my_id_coming || noop;
-        this.on_offer_sdp_coming = options.on_offer_sdp_coming || noop;
-        this.on_candidate_coming = options.on_candidate_coming || noop;
-        this.on_answer_sdp_coming = options.on_answer_sdp_coming || noop;
+        this.__on_offer_sdp_coming = options.__on_offer_sdp_coming || noop;
+        this.__on_candidate_coming = options.__on_candidate_coming || noop;
+        this.__on_answer_sdp_coming = options.__on_answer_sdp_coming || noop;
         this.on_new_client_want_to_view_my_video = options.on_new_client_want_to_view_my_video || noop;
 
+//        init this object
         var self = this;
         if(this.channel_type = "socket"){
             socket = new WebSocket(options.socket.url);
@@ -45,15 +46,14 @@
                 var msg = JSON.parse(message.data);
 //                console.log(msg.message_id,msg);
                 var fn_name = Channel.dispatch_msg[msg.message_id];
-                if(typeof  fn_name == "function"){
-                    fn_name(msg,self);
-                }else if(self[fn_name]){
+                if(self[fn_name] && typeof self[fn_name]){
                     self[fn_name](msg);
-                }else{
-                    noop();
                 }
             };
         }
+
+//        init peer manager
+        rtc.peerManager(this);
     }
 
     /*
@@ -110,9 +110,9 @@
     Channel.dispatch_msg = {
         1:"on_my_id_coming",
         2:"on_id_list_coming",
-        3:"on_offer_sdp_coming",
-        4:"on_candidate_coming",
-        5:"on_answer_sdp_coming",
+        3:"__on_offer_sdp_coming",
+        4:"__on_candidate_coming",
+        5:"__on_answer_sdp_coming",
         6:"on_new_client_want_to_view_my_video"
     };
 
