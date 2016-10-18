@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>test room</title>
+</head>
+<body>
+<div>my id:<span id="my-id"></span></div>
+<ul id="client-list"></ul>
+<button onclick="create_room()">create room</button>
+<button onclick="invite_remote_client()">create room</button>
+</body>
+</html>
+
+<script src="../client/lz.rtc.client_config.js"></script>
+<script src="../client/lz.rtc.Channel.js"></script>
+<script src="../client/lz.rtc.peerManager.js"></script>
+
+<script>
+    var channel = new lz.rtc.Channel({socket:{url:"ws:localhost:4080"}});
+
+    channel.on_my_id_coming = function(message){
+        document.getElementById("my-id").innerHTML = message.body.your_id;
+    };
+
+    channel.on_id_list_coming = function(msg){
+        document.getElementById("client-list").innerHTML = "";
+        msg.body.client_ids.forEach(function(ele){
+            document.getElementById("client-list").innerHTML+=
+                    "<li><a href='javascript:void(0);' onclick='invite_remote_client(\""+ ele +"\")'>"+ ele +"</a></li>";
+        })
+    };
+
+
+    channel.on_create_room_result_coming = function(){console.log(arguments[0])};
+
+    channel.on_invite_client_result_coming = function(msg){console.log(arguments[0])};
+
+    channel.on_new_room_invite_coming = function(msg){
+        console.log(arguments[0]);
+        if(confirm(msg.body.remote_id+" invite you to join room <<"+msg.body.room.room_name+">>")){
+            channel.join_room(msg.body.room.room_id);
+        }
+    };
+    channel.on_new_room_created =function(){console.log(arguments[0])};
+    channel.on_new_client_join_room =function(){console.log(arguments[0])};
+    channel.on_join_room_result_coming =function(){console.log(arguments[0])};
+
+
+
+
+    function create_room(){
+        channel.create_room("this is room name!")
+    }
+    function invite_remote_client(id){
+        channel.invite_client_to_join_my_room(id+"");
+    }
+</script>

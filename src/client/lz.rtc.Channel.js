@@ -26,13 +26,6 @@
         this.is_ready = false;
         this.my_id = null;
         this.channel_type = options.channel_type || "socket";
-        this.on_ready = options.on_ready || noop;
-        this.on_id_list_coming = options.on_id_list_coming || noop;
-        this.on_my_id_coming = options.on_my_id_coming || noop;
-        this.__on_offer_sdp_coming = options.__on_offer_sdp_coming || noop;
-        this.__on_candidate_coming = options.__on_candidate_coming || noop;
-        this.__on_answer_sdp_coming = options.__on_answer_sdp_coming || noop;
-        this.on_new_client_want_to_view_my_video = options.on_new_client_want_to_view_my_video || noop;
 
 //        init this object
         var self = this;
@@ -40,13 +33,13 @@
             socket = new WebSocket(options.socket.url);
             socket.onopen = function(){
                 self.is_ready = true;
-                self.on_ready("on ready");
+                self.on_ready && self.on_ready("on ready");
             };
             socket.onmessage = function (message) {
                 var msg = JSON.parse(message.data);
-//                console.log(msg.message_id,msg);
                 var fn_name = Channel.dispatch_msg[msg.message_id];
-                if(self[fn_name] && typeof self[fn_name]){
+                console.log(fn_name);
+                if(self[fn_name] && typeof self[fn_name] == "function"){
                     self[fn_name](msg);
                 }
             };
@@ -100,7 +93,24 @@
             request_body:{remote_id:remote_id}
         })
     };
-
+    Channel.prototype.create_room = function(room_name){
+        this.send({
+            request_id:5,
+            request_body:{room_name:room_name}
+        })
+    };
+    Channel.prototype.invite_client_to_join_my_room = function(remote_id){
+        this.send({
+            request_id:6,
+            request_body:{remote_id:remote_id}
+        })
+    };
+    Channel.prototype.join_room = function(room_id){
+        this.send({
+            request_id:7,
+            request_body:{room_id:room_id}
+        })
+    };
 
 
 
@@ -113,7 +123,13 @@
         3:"__on_offer_sdp_coming",
         4:"__on_candidate_coming",
         5:"__on_answer_sdp_coming",
-        6:"on_new_client_want_to_view_my_video"
+        6:"on_new_client_want_to_view_my_video",
+        7:"on_create_room_result_coming",
+        8:"on_invite_client_result_coming",
+        9:"on_new_room_invite_coming",
+        10:"on_join_room_result_coming",
+        11:"on_new_client_join_room"
+        ,12:"on_new_room_created"
     };
 
 
