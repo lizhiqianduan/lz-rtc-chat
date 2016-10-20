@@ -38,7 +38,8 @@
             socket.onmessage = function (message) {
                 var msg = JSON.parse(message.data);
                 var fn_name = Channel.dispatch_msg[msg.message_id];
-                console.log(fn_name);
+                console.log(msg.message_id,fn_name);
+                console.log(msg);
                 if(self[fn_name] && typeof self[fn_name] == "function"){
                     self[fn_name](msg);
                 }
@@ -111,6 +112,12 @@
             request_body:{room_id:room_id}
         })
     };
+    Channel.prototype.get_client_info = function(client_id){
+        this.send({
+            request_id:8,
+            request_body:{client_id:client_id}
+        })
+    };
 
 
 
@@ -130,6 +137,10 @@
         10:"on_join_room_result_coming",
         11:"on_new_client_join_room"
         ,12:"on_new_room_created"
+        ,13:"on_client_closed"
+        ,14:"on_new_client_connected"
+        ,15:"on_room_list_coming"
+        ,16:"on_client_info_coming"
     };
 
 

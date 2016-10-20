@@ -26,7 +26,7 @@ function Room(options){
     Room.all_rooms[this.room_id] = this;
 }
 Room.all_rooms = {};
-Room.defaultRoom = new Room({room_name:"default room"});
+//Room.defaultRoom = new Room({room_name:"default room"});
 
 Room.prototype.add_client = function(socket_client){
     var client_id = socket_client.socket_client_id;
@@ -66,6 +66,8 @@ Room.prototype.get_attendee_ids = function(){
 Room.get_room_by_socket_client = function(client){
     return Room.all_rooms[client.client_room_id];
 };
-
+Room.get_all = function(){
+    return Room.all_rooms;
+};
 
 exports = module.exports = Room;

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>小黑哥的迷你直播</title>
+    <link rel="stylesheet" href="./lib/lz-alert-plugin-master/lz.ui.css"/>
+    <link rel="stylesheet" href="./css/livetv.css"/>
+</head>
+<body>
+<header>
+    <div class="px1200">
+        <div id="logo" class="left"></div>
+        <div class="name left">迷你直播</div>
+
+        <div class="right user transition">
+            <span class="icon"></span>
+            <p class="user-name">hahah</p>
+        </div>
+        <div id="search" class="right"><input type="text" placeholder="搜索"/></div>
+
+    </div>
+</header>
+
+<section class="video px1200">
+    <video autoplay="autoplay" width="1200" controls="controls">
+
+    </video>
+    <span class="close-video"></span>
+</section>
+
+
+<section class="px1200 room-list">
+    <div class="panel-title">他们正在直播</div>
+    <ul class="clear">
+
+    </ul>
+</section>
+<footer class="transition">
+我的直播间
+</footer>
+
+
+<!-- template for room -->
+<li style="display: none;" class="transition template-room" >
+    <img class="play-icon transition" src="./images/playIcon.png" alt=""/>
+    <img src="./images/1.jpg" alt="" class="block"/>
+    <div class="title clear">
+        <p class="room-name left">美美的直播间</p>
+        <p class="right flag">颜值</p>
+    </div>
+    <div class="room-owner">美美</div>
+    <div class="me">我的房间</div>
+</li>
+
+
+
+
+</body>
+</html>
+
+<script src="./lib/lz-alert-plugin-master/jquery-1.8.2.js"></script>
+<script src="./lib/lz-alert-plugin-master/lz.js"></script>
+<script src="../client/lz.rtc.client_config.js"></script>
+<script src="../client/lz.rtc.Channel.js"></script>
+<script src="../client/lz.rtc.peerManager.js"></script>
+<script src="./js/livetv.js"></script>
+

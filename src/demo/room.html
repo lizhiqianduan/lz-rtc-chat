@@ -5,8 +5,30 @@
     <title>test room</title>
 </head>
 <body>
-<div>my id:<span id="my-id"></span></div>
-<ul id="client-list"></ul>
+<h2>my client</h2>
+<ul>
+    <li>my client id:<span id="my-id"></span></li>
+</ul>
+<h2>my created rooms</h2>
+<div>
+    <ul id="my-created-room-list">
+
+    </ul>
+</div>
+<h2>my joined rooms</h2>
+<ul id="my-joined-room-list">
+
+</ul>
+
+
+<h2>all clients</h2>
+<ul id="client-list">
+    empty
+</ul>
+<h2>all rooms</h2>
+<ul id="room-list">
+    empty
+</ul>
 <button onclick="create_room()">create room</button>
 <button onclick="invite_remote_client()">create room</button>
 </body>
@@ -17,9 +39,12 @@
 <script src="../client/lz.rtc.peerManager.js"></script>
 
 <script>
+    var my_id = null;
+
     var channel = new lz.rtc.Channel({socket:{url:"ws:localhost:4080"}});
 
     channel.on_my_id_coming = function(message){
+        my_id = message.body.your_id;
         document.getElementById("my-id").innerHTML = message.body.your_id;
     };
 
@@ -27,14 +52,13 @@
         document.getElementById("client-list").innerHTML = "";
         msg.body.client_ids.forEach(function(ele){
             document.getElementById("client-list").innerHTML+=
-                    "<li><a href='javascript:void(0);' onclick='invite_remote_client(\""+ ele +"\")'>"+ ele +"</a></li>";
+                    "<li>" +
+                            ele +
+                            (ele != my_id?" <button onclick='invite_remote_client(\""+ ele +"\")'>invite to join my room</button>" :"")+
+//                            " <button onclick='invite_remote_client(\""+ ele +"\")'>invite to join my room</button>" +
+                    "</li>";
         })
     };
-
-
-    channel.on_create_room_result_coming = function(){console.log(arguments[0])};
-
-    channel.on_invite_client_result_coming = function(msg){console.log(arguments[0])};
 
     channel.on_new_room_invite_coming = function(msg){
         console.log(arguments[0]);
@@ -42,15 +66,73 @@
             channel.join_room(msg.body.room.room_id);
         }
     };
-    channel.on_new_room_created =function(){console.log(arguments[0])};
-    channel.on_new_client_join_room =function(){console.log(arguments[0])};
-    channel.on_join_room_result_coming =function(){console.log(arguments[0])};
+    channel.on_room_list_coming = function(msg){
+        console.log(msg)
+//        document.getElementById("room-list").innerHTML = "";
+//        var room_ids = Object.keys(msg.body.room_map);
+//        if(room_ids.length == 0)
+//            return document.getElementById("room-list").innerHTML = "empty";
+//
+//        room_ids.forEach(function(room_id){
+//            var room = msg.body.room_map[room_id];
+//            var room_name = room.room_name;
+//            document.getElementById("room-list").innerHTML+=
+//                    "<li>"
+//                            + room_name
+//                            +(room.room_owner_id != my_id?"<button onclick='apply_to_join(\""+ room_id +"\")'>apply_to_join room</button>":"")
+//                    +"</li>";
+//            if(room.room_owner_id == my_id){
+//                document.getElementById("my-room-id").innerHTML = room_id;
+//                document.getElementById("my-room-name").innerHTML = room_name;
+//            }
+//
+//        })
+    };
 
+    channel.on_create_room_result_coming = function(msg){
+        if(msg.body.reulst == 1){
+            var room = msg.body.room;
+            document.getElementById("my-room-id").innerHTML = room.room_id;
+            document.getElementById("my-room-name").innerHTML = room.room_name;
+        }
+    };
+
+    channel.on_client_info_coming = function(msg){
+        if(!msg.body.client_info) return console.log("client info is null");
+        var client_info = msg.body.client_info;
+        if(client_info.bind_client_id == my_id){
+            var my_created_room_list = document.getElementById("my-created-room-list");
+            var my_joined_room_list = document.getElementById("my-joined-room-list");
+            my_created_room_list.innerHTML = "";
+            my_joined_room_list.innerHTML = "";
+            var room_id,room;
+            for(room_id in client_info.created_rooms){
+                room = client_info.created_rooms[room_id];
+                my_created_room_list.innerHTML+=
+                        '<li><a href="javascript:void(0);" onclick="channel.join_room('+ room.room_id +')">my room name:<span>'+ room.room_name +'</span></a></li>';
+            }
+            for(room_id in client_info.joined_rooms){
+                room = client_info.created_rooms[room_id];
+                my_joined_room_list.innerHTML+=
+                        '<li><a href="javascript:void(0);" onclick="channel.join_room('+ room.room_id +')">my room name:<span>'+ room.room_name +'</span></a></li>';
+            }
+        }
+    };
+
+
+    channel.on_new_room_created =
+    channel.on_invite_client_result_coming =
+    channel.on_new_client_join_room =
+    channel.on_join_room_result_coming =
+    channel.on_client_closed =
+            function(){console.log(arguments[0])};
 
 
 
     function create_room(){
-        channel.create_room("this is room name!")
+        var room_name = prompt("enter the room name");
+        if(room_name.trim() == "") return alert("can not empty!");
+        channel.create_room(room_name)
     }
     function invite_remote_client(id){
         channel.invite_client_to_join_my_room(id+"");

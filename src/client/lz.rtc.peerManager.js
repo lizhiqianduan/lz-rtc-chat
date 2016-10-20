@@ -17,7 +17,7 @@
 
     function peerManager(channel,options) {
         var self = this;
-        console.log(self);
+//        console.log(self);
         _channel = channel;
         channel.__on_offer_sdp_coming = function(msg){
             var p2p_peer_connection = new webkitRTCPeerConnection(iceServer);

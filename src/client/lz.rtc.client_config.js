@@ -10,9 +10,14 @@
     }else{
         window.lz = {rtc:{}};
     }
+    var rtc = lz.rtc;
 
-    window.lz.rtc.client_config = {
 
+    lz.rtc.open_my_video = function(cb){
+        navigator.webkitGetUserMedia({ "audio": false, "video": true },function(stream){
+            rtc.my_stream = stream;
+            cb(null,stream);
+        }, cb);
     };
 
 

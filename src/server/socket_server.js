@@ -6,7 +6,7 @@
 var url = require("url");
 var Message = require("./Message.js");
 var SocketClient = require("./SocketClient.js");
-
+var Room = require("./Room.js");
 
 
 
@@ -16,6 +16,9 @@ function init(options) {
         var socket_client = new SocketClient(ws);
         console.log("new connection",socket_client.socket_client_id);
         socket_client.bind_event();
+        SocketClient.send_to_all(new Message(14,{
+            client_id:socket_client.socket_client_id
+        }).val());
         SocketClient.add(socket_client);
 
         ws.send(
@@ -24,15 +27,16 @@ function init(options) {
                 your_id:socket_client.socket_client_id
             }).val()
         );
+        ws.send(new Message(15,{room_map:Room.get_all()}).val());
 
-        SocketClient.get_all_clients_id().forEach(function(id){
-            SocketClient.socket_clients[id].ws.send(
-                new Message(2,{
-                    client_ids:SocketClient.get_all_clients_id(),
-                    your_id:socket_client.socket_client_id
-                }).val()
-            );
-        });
+        SocketClient.send_to_all(new Message(2,{
+                client_ids:SocketClient.get_all_clients_id(),
+                your_id:socket_client.socket_client_id
+            }).val());
+//        SocketClient.get_all_clients_id().forEach(function(id){
+//            SocketClient.socket_clients[id].ws.send(
+//            );
+//        });
     });
 }
 
