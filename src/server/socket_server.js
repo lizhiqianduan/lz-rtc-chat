@@ -27,7 +27,6 @@ function init(options) {
                 your_id:socket_client.socket_client_id
             }).val()
         );
-        ws.send(new Message(15,{room_map:Room.get_all()}).val());
 
         SocketClient.send_to_all(new Message(2,{
                 client_ids:SocketClient.get_all_clients_id(),
@@ -37,6 +36,9 @@ function init(options) {
 //            SocketClient.socket_clients[id].ws.send(
 //            );
 //        });
+    });
+    wss.on("error",function(){
+        console.log("wss error!")
     });
 }
 

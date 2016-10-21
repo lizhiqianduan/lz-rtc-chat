@@ -23,15 +23,28 @@
 </header>
 
 <section class="video px1200 center">
-    <video autoplay="autoplay" width="800" controls="controls">
+    <h2 class="video-title"><span class="room-name"></span></h2>
+    <video autoplay="autoplay" width="800">
 
     </video>
-    <span class="close-video"></span>
+    <span class="close-video">关</span>
+    <span class="size">1201</span>
+    <ul class="im-list">
+        <!--<li class="im"><span class="user">小白：</span><span class="msg">哈哈哈哈</span></li>-->
+        <!--<li class="room-notify">xxx 进入房间</li>-->
+        <!--<li><span class="user">小白：</span><span class="msg">哈哈哈哈</span></li>-->
+    </ul>
+    <div class="im-input">
+        <form>
+            <input type="text"/>
+            <button type="submit">发消息</button>
+        </form>
+    </div>
 </section>
 
 
 <section class="px1200 room-list">
-    <div class="panel-title">他们正在直播</div>
+    <div class="panel-title">他们正在直播 <span class="refresh">刷新列表</span></div>
     <ul class="clear">
 
     </ul>
@@ -52,7 +65,10 @@
     <div class="room-owner">美美</div>
     <div class="me">我的房间</div>
 </li>
-
+<!-- template for im -->
+<li style="display: none" class="im"><span class="user">小白：</span><span class="msg">哈哈哈哈</span></li>
+<!-- template for room notify -->
+<li style="display: none" class="room-notify">小白进入房间</li>
 
 
 

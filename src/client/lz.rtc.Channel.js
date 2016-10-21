@@ -26,11 +26,13 @@
         this.is_ready = false;
         this.my_id = null;
         this.channel_type = options.channel_type || "socket";
-
+        this.socket = null;
 //        init this object
         var self = this;
         if(this.channel_type = "socket"){
             socket = new WebSocket(options.socket.url);
+            rtc.socket_url = options.socket.url;
+            this.socket = socket;
             socket.onopen = function(){
                 self.is_ready = true;
                 self.on_ready && self.on_ready("on ready");
@@ -135,7 +137,24 @@
             request_body:{client_id:client_id}
         });
     };
-
+    Channel.prototype.del_room = function(room_id){
+        this.send({
+            request_id:12,
+            request_body:{room_id:room_id}
+        });
+    };
+    Channel.prototype.leave_room = function(room_id){
+        this.send({
+            request_id:13,
+            request_body:{room_id:room_id}
+        })
+    };
+    Channel.prototype.send_im_to_room = function(im){
+        this.send({
+            request_id:14,
+            request_body:{im:im}
+        })
+    };
 
 
     /*
@@ -159,6 +178,10 @@
         ,15:"on_room_list_coming"
         ,16:"on_client_info_coming"
         ,17:"on_new_join_apply_coming"
+        ,18:"on_del_room_result_coming"
+        ,19:"on_room_be_del_notify"
+        ,20:"on_room_system_msg_coming"
+        ,21:"on_new_im_msg_coming"
     };
 
 

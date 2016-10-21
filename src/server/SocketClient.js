@@ -37,6 +37,20 @@ SocketClient.prototype.bind_event = function(){
         if(client_created_room){
             client_created_room.del_client(self);
             Room.del_rom(client_created_room);
+            SocketClient.send_to_all(new Message(19,{
+                room:client_created_room
+            }).val())
+        }
+        if(client_be_in_room){
+            SocketClient.send_to_room(client_be_in_room,new Message(20,{
+                room:client_be_in_room,
+                client_info:self.client_info,
+                notify_type:1  // client leave
+            }).val());
+            var room = client_be_in_room;
+            var clients = room.get_room_clients_id();
+            if(clients.indexOf(self.socket_client_id) == -1) return;
+            room.del_client(self);
         }
 //        SocketClient.del(self);
 //        if(self.client_created_room){
@@ -85,6 +99,15 @@ SocketClient.prototype.dispatch_client_message = function(message){
             break;
         case 11:
             this.on_reject_to_join_listener(request_id,message);
+            break;
+        case 12:
+            this.on_del_room_listener(request_id,message);
+            break;
+        case 13:
+            this.on_leave_room_listener(request_id,message);
+            break;
+        case 14:
+            this.on_send_im_to_room_listener(request_id,message);
             break;
         default :
             this.default_listener(request_id,message);
@@ -185,11 +208,13 @@ SocketClient.prototype.on_create_room_listener = function(request_id,message){
         room_name:message.request_body.room_name
     });
     this.client_info.add_created_room(room);
+    this.client_info.add_joined_room(room);
+
     this.send(new Message(7,{
         result:create_result,
         room:room
     }).val());
-    SocketClient.send_to_all(new Message(15,{room_map:Room.get_all()}).val());
+//    SocketClient.send_to_all(new Message(15,{room_map:Room.get_all()}).val());
 
 };
 SocketClient.prototype.on_invite_client_listener = function(request_id,message){
@@ -252,9 +277,15 @@ SocketClient.prototype.on_allow_to_join_listener = function(request_id,message) 
     var room = this.client_info.client_created_room;
     var client = SocketClient.get_client_by_id(message.request_body.client_id);
     room.add_client(client);
+    client.client_info.client_be_in_room = room;
     client.send(new Message(10,{
         result:0,
         room:room
+    }).val());
+    SocketClient.send_to_room(room,new Message(20,{
+        room:room,
+        client_info:client.client_info,
+        notify_type:2  // client join
     }).val());
 };
 SocketClient.prototype.on_reject_to_join_listener = function(request_id,message) {
@@ -265,16 +296,56 @@ SocketClient.prototype.on_reject_to_join_listener = function(request_id,message)
         room:room
     }).val());
 };
-SocketClient.prototype.on_del_created_room = function(){
+SocketClient.prototype.on_del_room_listener = function(request_id,message){
+    var room_id = message.request_body.room_id;
+    var client_created_room = this.client_info.client_created_room;
+    var del_result = 0; // success
+    if(!client_created_room) del_result = 1;  // no room have created
+    else if(room_id!=client_created_room.room_id) del_result = 2; // room is not created by this client
 
+    if(del_result==0){
+        this.client_info.del_created_room(room_id);
+        Room.del_rom(client_created_room);
+        this.client_info.client_created_room = null;
+        this.client_info.client_be_in_room = null;
+        SocketClient.send_to_all(new Message(19,{
+            room:client_created_room
+        }).val())
+    }
+    this.send(new Message(18,{
+        result:del_result,
+        room:client_created_room
+    }).val());
+
+};
+SocketClient.prototype.on_leave_room_listener = function(request_id,message){
+    var room_id = message.request_body.room_id;
+    var room = Room.get_by_id(room_id);
+    if(!room) return;
+    var clients = room.get_room_clients_id();
+    if(clients.indexOf(this.socket_client_id) == -1) return;
+    room.del_client(this);
+    this.client_info.client_be_in_room = null;
+    SocketClient.send_to_room(room,new Message(20,{
+        room:room,
+        client_info:this.client_info,
+        notify_type:1  // client leave
+    }).val())
+};
+SocketClient.prototype.on_send_im_to_room_listener =function(request_id,message){
+    var room = this.client_info.client_be_in_room;
+    var im = message.request_body.im;
+    if(!room) return;
+    SocketClient.send_to_room(room,new Message(21,{
+        im:im,
+        room:room,
+        client_info:this.client_info
+    }).val());
 };
 
 SocketClient.prototype.on_get_room_list_listener = function(request_id,message){
     this.send(new Message(15,{room_map:Room.get_all()}).val());
 };
-
-
-
 ///// section for room end///////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 

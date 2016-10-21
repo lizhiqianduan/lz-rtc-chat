@@ -28,6 +28,10 @@
             cb(null,stream);
         }, cb);
     };
+    lz.rtc.close_my_stream = function(){
+        if(lz.rtc.my_stream)
+            lz.rtc.my_stream.getTracks().forEach(function(t){t.stop()})
+    };
 
 
 

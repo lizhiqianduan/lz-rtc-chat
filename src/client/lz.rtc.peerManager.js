@@ -41,7 +41,8 @@
                     channel.send_answer_to_remote(msg.body.remote_id,answer);
                 },function(e){alert(e)});
             },function(a,b,c){
-                alert(a+b+c+"set remote");
+                if(peerManager.onerror && typeof peerManager.onerror == "function")
+                    peerManager.onerror("set remote error! "+"您的设备编解码器与视频不一致，无法观看该主播！");
             });
         };
         channel.__on_answer_sdp_coming = function(msg){

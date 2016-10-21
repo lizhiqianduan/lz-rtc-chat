@@ -62,7 +62,7 @@ File code : utf8 without bom
 			var defaults = {
 				//@param type : "messageBox" "textInput" "confirm",  default "messageBox"
 				"type": "messageBox",
-				"title": "lz弹出层",
+				"title": "提示",
 				"content": "lz示例",
 				"noMask": false,
 				//@param "effect" : "none" "slideDown" "slideUp" "fadeIn" "slideLeft" "slideRight" can be used,"none" is default
