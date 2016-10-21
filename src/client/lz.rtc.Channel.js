@@ -161,6 +161,7 @@
     * Map for remote message id
     * */
     Channel.dispatch_msg = {
+        0:"on_server_error_coming",
         1:"on_my_id_coming",
         2:"on_id_list_coming",
         3:"__on_offer_sdp_coming",

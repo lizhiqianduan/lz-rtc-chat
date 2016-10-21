@@ -26,8 +26,14 @@ SocketClient.prototype.bind_event = function(){
     this.ws.on('message', function(message) {
         console.log('received: %s', message);
 //        message.replace("UDP/TLS/RTP/SAVPF","RTP/SAVPF");
-        var msg = JSON.parse(message);
-        self.dispatch_client_message(msg);
+        try{
+            var msg = JSON.parse(message);
+            self.dispatch_client_message(msg);
+        }catch (e){
+            self.send(new Message(0,{
+                message:"message is not an object! invalid!"
+            }).val())
+        }
     });
     this.ws.on('close',function(){
         console.log("close",self.socket_client_id);
@@ -353,7 +359,9 @@ SocketClient.prototype.on_get_room_list_listener = function(request_id,message){
 
 
 SocketClient.prototype.default_listener = function (request_id,message) {
-    this.send(new Message(0,message).val());
+    this.send(new Message(0,{
+        message:"invalid message!"
+    }).val());
 };
 
 

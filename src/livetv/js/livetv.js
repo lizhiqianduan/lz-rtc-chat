@@ -211,6 +211,10 @@ channel.on_new_im_msg_coming =function(msg){
     render_im(client_info,im);
     dom_im_list.scrollTop(999999999);
 };
+
+channel.on_server_error_coming = function(msg){
+    $.lz.Alert(""+msg.body.message);
+};
 };
 
 
