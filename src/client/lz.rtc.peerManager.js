@@ -3,7 +3,6 @@
  * More info,see my site http://www.lizhiqianduan.com.
  */
 
-
 ;(function (rtc) {
     var iceServer = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]}
         , _channel
@@ -36,11 +35,14 @@
                 }
             })(p2p_remote_client_id);
 
-            pc.setRemoteDescription(msg.body.offer);
-            pc.createAnswer(function(answer) {
-                pc.setLocalDescription(answer);
-                channel.send_answer_to_remote(msg.body.remote_id,answer);
-            },function(){});
+            pc.setRemoteDescription(new RTCSessionDescription(msg.body.offer),function(a,b,c){
+                pc.createAnswer(function(answer) {
+                    pc.setLocalDescription(new RTCSessionDescription(answer));
+                    channel.send_answer_to_remote(msg.body.remote_id,answer);
+                },function(e){alert(e)});
+            },function(a,b,c){
+                alert(a+b+c+"set remote");
+            });
         };
         channel.__on_answer_sdp_coming = function(msg){
             var p2p_peer_connection = all_peer_connections[msg.body.remote_id];
@@ -106,3 +108,4 @@
 
 
 })(lz.rtc);
+

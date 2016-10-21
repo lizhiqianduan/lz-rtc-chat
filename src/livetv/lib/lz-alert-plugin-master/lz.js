@@ -60,7 +60,7 @@ File code : utf8 without bom
 		//@param userSetting: Object set by user.If undefined,param defaults will be used
 		Alert: function(content, title, userSetting) {
 			var defaults = {
-				//@param type : "messageBox" "textInput",  default "messageBox"
+				//@param type : "messageBox" "textInput" "confirm",  default "messageBox"
 				"type": "messageBox",
 				"title": "lz弹出层",
 				"content": "lz示例",
@@ -74,7 +74,8 @@ File code : utf8 without bom
 			var userSetting = isObj(userSetting) ? userSetting : {};
 			var settings = $.extend( defaults, userSetting);
 			var $body = $("body");
-			
+			winH = $(window).height();
+			winW = $(window).width();
 
 			//规定传参方式
 			switch (arguments.length) {
@@ -175,6 +176,9 @@ File code : utf8 without bom
 						settings.content = '<textArea class="lz-text" ></textArea>';
 						btns = sureBtn + cancelBtn;
 						break;
+                    case "confirm":
+                        btns = sureBtn + cancelBtn;
+                        break;
 					default:
 						btns = sureBtn;
 						break;

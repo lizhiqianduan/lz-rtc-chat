@@ -15,10 +15,11 @@ function Room(options){
     this.room_owner_id = options.room_owner_id;
     this.room_name = options.room_name;
     this.room_id = Date.now()+"."+parseInt((Math.random()*100000000).toString());
-    this.room_max_size = options.room_max_size || 100;
+    this.room_max_size = options.room_max_size || 5;
     this.room_size = 1;
     this.room_clients_id = {};
     this.room_invited_clients_id = {};
+    this.need_owner_allow = options.need_owner_allow;
 
 //    init
     this.room_clients_id[this.room_owner_id] = this.room_owner_id;
@@ -69,5 +70,7 @@ Room.get_room_by_socket_client = function(client){
 Room.get_all = function(){
     return Room.all_rooms;
 };
-
+Room.del_rom = function(room){
+    delete Room.all_rooms[room.room_id];
+};
 exports = module.exports = Room;

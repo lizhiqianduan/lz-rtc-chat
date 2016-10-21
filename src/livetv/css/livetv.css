@@ -7,6 +7,7 @@ ul,li{list-style: none;outline: none;}
 .px1200{width:1200px;margin: 0 auto;}
 .left{float: left;}
 .right{float: right;}
+.center{text-align: center;}
 .block{display: block;}
 .transition{
     -webkit-transition: all 0.3s;
@@ -50,3 +51,17 @@ header .user-name{ margin-left: 10px; float: left;}
 /*footer*/
 footer{width:100%; font-weight: bold;color: #fff; background-color: deepskyblue;text-align: center;height: 50px;line-height: 50px;position: fixed;bottom: 0;}
 footer:hover{cursor: pointer;color: #f60;}
+
+
+
+@media screen and (max-width: 1000px) {
+    .px1200{width: auto;clear: both;}
+    header .px1200{height: auto;}
+    header .user{float: none; clear: both; width: 90%; display: block; height: 30px;margin-left: 0;}
+    header #search{float: left;  width: 80%; display: none;}
+
+    video{width: 100%;z-index: 55;}
+    .room-list li{width: 90%;}
+    .room-list img.block{width: 100%;}
+    footer{background-color: red;position: relative;}
+}

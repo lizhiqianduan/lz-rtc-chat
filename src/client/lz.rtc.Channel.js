@@ -106,7 +106,7 @@
             request_body:{remote_id:remote_id}
         })
     };
-    Channel.prototype.join_room = function(room_id){
+    Channel.prototype.apply_to_join_room = function(room_id){
         this.send({
             request_id:7,
             request_body:{room_id:room_id}
@@ -117,6 +117,23 @@
             request_id:8,
             request_body:{client_id:client_id}
         })
+    };
+    Channel.prototype.get_room_list = function(){
+        this.send({
+            request_id:9
+        })
+    };
+    Channel.prototype.allow_to_join = function(client_id){
+        this.send({
+            request_id:10,
+            request_body:{client_id:client_id}
+        });
+    };
+    Channel.prototype.reject_to_join = function(client_id){
+        this.send({
+            request_id:11,
+            request_body:{client_id:client_id}
+        });
     };
 
 
@@ -134,13 +151,14 @@
         7:"on_create_room_result_coming",
         8:"on_invite_client_result_coming",
         9:"on_new_room_invite_coming",
-        10:"on_join_room_result_coming",
+        10:"on_apply_to_join_room_result_coming",
         11:"on_new_client_join_room"
         ,12:"on_new_room_created"
         ,13:"on_client_closed"
         ,14:"on_new_client_connected"
         ,15:"on_room_list_coming"
         ,16:"on_client_info_coming"
+        ,17:"on_new_join_apply_coming"
     };
 
 
