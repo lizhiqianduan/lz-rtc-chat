@@ -25,9 +25,24 @@ var
     , room_list_map
     , default_size = 1200
     , peer_manager = lz.rtc.peerManager
-    , channel = new lz.rtc.Channel({socket:{url:"wss:"+localhost+":4080"}})
+    // , channel = new lz.rtc.Channel({socket:{url:"wss:"+localhost+":4080"}})
     ;
-init_channel(channel);
+init_port();
+
+function init_port(){
+    $.ajax({
+        url:"/port",
+        method:"get",
+        success:function(data){
+            channel = new lz.rtc.Channel({socket:{url:"wss:"+localhost+":"+data.port}})
+            init_channel(channel);
+        },
+        error:function(){
+            console.log("get port error!")
+        }
+    })
+}
+
 
 function init_channel(channel){
 //////  channel event
