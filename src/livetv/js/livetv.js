@@ -34,7 +34,7 @@ function init_port(){
         url:"/port",
         method:"get",
         success:function(data){
-            channel = new lz.rtc.Channel({socket:{url:"wss:"+location.hostname+":"+data.port}})
+            channel = new lz.rtc.Channel({socket:{url:"ws:"+location.hostname+":"+data.port}})
             init_channel(channel);
         },
         error:function(){
