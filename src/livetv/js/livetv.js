@@ -25,7 +25,7 @@ var
     , room_list_map
     , default_size = 1200
     , peer_manager = lz.rtc.peerManager
-    , channel = new lz.rtc.Channel({socket:{url:"ws:192.168.10.168:4080"}})
+    , channel = new lz.rtc.Channel({socket:{url:"wss:"+localhost+":4080"}})
     ;
 init_channel(channel);
 

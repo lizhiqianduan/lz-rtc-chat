@@ -16,4 +16,9 @@ app.use(express.static("./src"));
 server.on('request', app);
 server.listen(port, function () { console.log('Listening on ' + server.address().port) });
 
+
+app.use("/port",function (req,res) {
+	res.send({port:port});
+})
+
 require("./socket_server.js")({wss:wss});
