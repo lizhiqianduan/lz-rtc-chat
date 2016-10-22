@@ -9,7 +9,7 @@ var server = require('http').createServer()
     , wss = new WebSocketServer({ server: server })
     , express = require('express')
     , app = express()
-    , port = 4080;
+    , port = process.env.PORT || 4080;
 
 
 app.use(express.static("./src"));
