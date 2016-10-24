@@ -116,13 +116,11 @@
 
 
     function on_device_error(e){
-        alert(111);
         if(peerManager.on_device_error && typeof peerManager.on_device_error == "function")
             peerManager.on_device_error(e);
     }
 
     function on_error (e) {
-        alert(222);
         if(peerManager.onerror && typeof peerManager.onerror == "function")
             peerManager.onerror(e);
     }

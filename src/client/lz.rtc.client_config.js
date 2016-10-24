@@ -12,15 +12,11 @@
     }
     var rtc = lz.rtc;
 
-
-
-
     window.webkitRTCPeerConnection = (window.webkitRTCPeerConnection || window.PeerConnection || window.webkitPeerConnection || window.msRTCPeerConnection || window.mozRTCPeerConnection);
     window.URL = (window.URL || window.webkitURL || window.msURL || window.oURL);
     navigator.webkitGetUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
     window.RTCIceCandidate = (window.webkitRTCIceCandidate || window.RTCIceCandidate  ||window.mozRTCIceCandidate || window.msRTCIceCandidate);
     window.RTCSessionDescription = (window.mozRTCSessionDescription || window.RTCSessionDescription);
-
 
     lz.rtc.open_my_video = function(cb){
         navigator.webkitGetUserMedia({ "audio": false, "video": true },function(stream){
