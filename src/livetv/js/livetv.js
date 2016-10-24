@@ -3,7 +3,7 @@
  * More info,see my site http://www.lizhiqianduan.com.
  */
 
-var debug = true;
+var debug = false;
 
 var
      dom_my_id  = $(".user-name")
