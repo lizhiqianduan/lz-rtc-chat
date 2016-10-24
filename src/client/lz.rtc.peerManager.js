@@ -41,8 +41,7 @@
                     channel.send_answer_to_remote(msg.body.remote_id,answer);
                 },function(e){alert(e)});
             },function(a,b,c){
-                if(peerManager.onerror && typeof peerManager.onerror == "function")
-                    peerManager.onerror("set remote error! "+"您的设备编解码器与视频不一致，无法观看该主播！");
+                on_error();
             });
         };
         channel.__on_answer_sdp_coming = function(msg){
@@ -92,7 +91,9 @@
             pc.createOffer(function(offer) {
                 pc.setLocalDescription(offer);
                 channel.send_offer_to_remote(p2p_remote_client_id,offer);
-            },noop);
+            },function(e){
+                on_error(e);
+            });
             return;
         }
 
@@ -102,11 +103,29 @@
             pc.createOffer(function(offer) {
                 pc.setLocalDescription(offer);
                 channel.send_offer_to_remote(p2p_remote_client_id,offer);
-            },noop);
-        }, noop);
+            },function(e){
+                on_error(e);
+            });
+        }, function(e) {
+            peerManager.on_device_error(e);
+        });
     };
 
 
+
+
+
+    function on_device_error(e){
+        alert(111);
+        if(peerManager.on_device_error && typeof peerManager.on_device_error == "function")
+            peerManager.on_device_error(e);
+    }
+
+    function on_error (e) {
+        alert(222);
+        if(peerManager.onerror && typeof peerManager.onerror == "function")
+            peerManager.onerror(e);
+    }
 
 })(lz.rtc);
 

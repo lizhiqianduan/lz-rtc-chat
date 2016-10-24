@@ -65,7 +65,10 @@ header .user-name{ margin-left: 10px; float: left;}
 footer{width:100%; font-weight: bold;color: #fff; background-color: deepskyblue;text-align: center;height: 50px;line-height: 50px;position: fixed;bottom: 0;}
 footer:hover{cursor: pointer;color: #f60;}
 
-
+/* loading */
+.loading{}
+.loading-body{position:absolute; left:50%;top:30%; text-align: center; width:200px; background-color: #fff; padding: 20px 10px; margin-left: -100px;}
+.page-mask{background-color: #ccc;position: absolute;top:0;left: 0;}
 
 @media screen and (max-width: 1000px) {
     .px1200{width: auto;clear: both;}

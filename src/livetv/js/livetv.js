@@ -30,6 +30,9 @@ var
     , channel = new lz.rtc.Channel({socket:{url:socket_url}})
     ;
 
+
+loading("正在初始化...");
+
 // init_port();
 // init_channel(channel);
 
@@ -51,6 +54,7 @@ var
 // function init_channel(channel){
 //////  channel event
 channel.on_my_id_coming = function(message){
+    close_loading();
     my_client_id = message.body.your_id;
     dom_my_id.html(my_client_id);
     channel.get_room_list();
@@ -257,9 +261,15 @@ peer_manager.on_remote_stream_coming = function(remote_id,stream){
 
 };
 peer_manager.onerror = function(msg){
-    alert("设备不一致，无法观看该主播!");
+    alert("出错了！错误信息为:"+msg);
     if(my_current_room)
         channel.leave_room(my_current_room.room_id);
+};
+peer_manager.on_device_error = function(msg){
+    alert("获取设备失败！权限不够、或者浏览器拒绝了授权！");
+    if(my_current_room)
+        channel.leave_room(my_current_room.room_id);
+    $.lz.Alert("请注意检查浏览器地址栏末尾，是不是新弹窗被阻止啦！");
 };
 
 //////////// dom event
@@ -277,11 +287,11 @@ dom_footer.on("click",function(){
         channel.create_room(room_name);
     }
 });
-dom_room_li.live("click",function(){
-    var self = $(this);
-    var room = self.data("room");
-    channel.apply_to_join_room(room.room_id);
-});
+// dom_room_li.on("click",function(){
+//     var self = $(this);
+//     var room = self.data("room");
+//     channel.apply_to_join_room(room.room_id);
+// });
 dom_close_video.on("click",function(){
 //    var room = dom_video.data("room");
     if(my_create_room){
@@ -324,6 +334,7 @@ dom_refresh_btn.on("click",function(){
 });
 
 window.onbeforeunload = function(){
+    if(debug) return null;
     return "刷新页面将会关闭你的直播间，确认重新加载吗？";
 };
 
@@ -337,6 +348,12 @@ function render_room(room){
     dom.find(".room-owner").text(room.room_owner_id);
     dom_room_list.append(dom);
     dom.show();
+
+    dom.on("click",function(){
+        var self = $(this);
+        var room = self.data("room");
+        channel.apply_to_join_room(room.room_id);
+    });
 }
 function render_room_map(room_map){
     dom_room_list.html("");
@@ -373,7 +390,24 @@ function disable_scroll_bar(bool){
         $("body").css({overflow:"auto",height:"auto"});
 };
 
-function info(argument) {
-    
+function loading(msg) {
+    disable_scroll_bar(true);
+    var dom_msg = $(".loading>span");
+    if(dom_msg.length>0){
+        $(".page-mask").css({height:$(window).height(),width:$(window).width()});
+        // $.lz.autoMiddle($(".loading"),$(".loading-body"));
+        return dom_msg.html(msg);
+    }
+    var dom = $("<div class='loading'><div class='page-mask'></div><div class='loading-body'><img src='./images/loading.gif' alt='' /> <br /> <span></span> </div></div>");
+    dom.find("span").html(msg);
+    dom.find(".page-mask").css({height:$(window).height(),width:$(window).width()});
+    // $.lz.autoMiddle($(".loading"),$(".loading-body"));
+    dom.show();
+    $("body").append(dom);
 }
 
+function close_loading(){
+    disable_scroll_bar(false);
+    $(".loading").remove();
+}
+loading("hahahaha ")
