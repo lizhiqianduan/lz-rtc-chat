@@ -3,6 +3,7 @@
  * More info,see my site http://www.lizhiqianduan.com.
  */
 
+var debug = true;
 
 var
      dom_my_id  = $(".user-name")
@@ -25,28 +26,29 @@ var
     , room_list_map
     , default_size = 1200
     , peer_manager = lz.rtc.peerManager
-    , channel = new lz.rtc.Channel({socket:{url:"wss:"+location.host}})
+    , socket_url = debug ? "ws:"+location.host : "wss:"+location.host
+    , channel = new lz.rtc.Channel({socket:{url:socket_url}})
     ;
 
 // init_port();
-init_channel(channel);
+// init_channel(channel);
 
-function init_port(){
-    $.ajax({
-        url:"/port",
-        method:"get",
-        success:function(data){
-            channel = new lz.rtc.Channel({socket:{url:"ws:"+location.host+":"+data.port}})
-            init_channel(channel);
-        },
-        error:function(){
-            console.log("get port error!")
-        }
-    })
-}
+// function init_port(){
+//     $.ajax({
+//         url:"/port",
+//         method:"get",
+//         success:function(data){
+//             channel = new lz.rtc.Channel({socket:{url:"ws:"+location.host+":"+data.port}})
+//             init_channel(channel);
+//         },
+//         error:function(){
+//             console.log("get port error!")
+//         }
+//     })
+// }
 
 
-function init_channel(channel){
+// function init_channel(channel){
 //////  channel event
 channel.on_my_id_coming = function(message){
     my_client_id = message.body.your_id;
@@ -232,7 +234,7 @@ channel.on_new_im_msg_coming =function(msg){
 channel.on_server_error_coming = function(msg){
     $.lz.Alert(""+msg.body.message);
 };
-};
+// };
 
 
 ////////// peer event
@@ -371,4 +373,7 @@ function disable_scroll_bar(bool){
         $("body").css({overflow:"auto",height:"auto"});
 };
 
+function info(argument) {
+    
+}
 
