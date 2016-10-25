@@ -393,7 +393,7 @@ function disable_scroll_bar(bool){
 function loading(msg) {
     disable_scroll_bar(true);
     var dom_msg = $(".loading>span");
-    if(dom_msg.length>0){
+    if(dom_msg.text().length>0){
         $(".page-mask").css({height:$(window).height(),width:$(window).width()});
         // $.lz.autoMiddle($(".loading"),$(".loading-body"));
         return dom_msg.html(msg);
@@ -410,4 +410,3 @@ function close_loading(){
     disable_scroll_bar(false);
     $(".loading").remove();
 }
-loading("hahahaha ")

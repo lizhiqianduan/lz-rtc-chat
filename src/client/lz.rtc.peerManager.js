@@ -3,8 +3,18 @@
  * More info,see my site http://www.lizhiqianduan.com.
  */
 
+
 ;(function (rtc) {
-    var iceServer = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]}
+    var iceServer = {"iceServers": [
+            {"url": "stun:stun.l.google.com:19302"},
+            {"url": "stun:stunserver.org:3478"},
+            {"url": "stun:stun.xten.com:3478"},
+            {"url": "stun:stun.fwdnet.net:3478"},
+            {"url": "stun:stun.wirlab.net:3478"},
+            {"url": "stun:stun.iptel.org:3478"},
+            {"url": "stun:stun.ekiga.net:3478"},
+
+        ]}
         , _channel
         , noop = function(){}
         ;
