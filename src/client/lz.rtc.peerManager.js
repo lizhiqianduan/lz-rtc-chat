@@ -33,8 +33,8 @@
             {url:'stun:stun.voxgratia.org'},
             {url:'stun:stun.xten.com'},
             {url:'s2.voipstation.jp'},
-            {url:'stun:stun.ideasip.com'},
-            {url:'stun:test.kc-motor.com'},
+            {url:'stun.ideasip.com'},
+            {url:'test.kc-motor.com'},
 
         ]}
         , _channel
