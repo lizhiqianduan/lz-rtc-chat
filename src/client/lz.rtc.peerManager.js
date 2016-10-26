@@ -6,8 +6,11 @@
 
 ;(function (rtc) {
     var iceServer = {"iceServers": [
-            {"url": "stun:stun.l.google.com:19302"},
-            {"url":'stun:test.kc-motor.com'},
+            {url: "stun:stun.l.google.com:19302"},
+            {url:'stun:test.kc-motor.com'},
+            {url: 'stun:23.21.150.121'},
+            {url: 'stun:stun.callwithus.com'},
+
         ]}
         , _channel
         , noop = function(){}
